@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Atul Sharma Matching Game Part 4</title>
+        <style>
+            #rightSide {  left: 500px;
+                          border-left: 1px solid black }
+            div {width:500px; height:500px;
+                 position:absolute}
+            img {position:absolute}
+        </style>
+    </head>
+    <body id="theBody" onload="generateFaces()">
+      <h1>Matching Game</h1>
+      <p>Click the extra face on the left side.</p>
+      <div id="leftSide"></div>
+      <div id="rightSide"></div>
+      <script>
+        var numberOfFaces = 5;
+        var theLeftSide = document.getElementById("leftSide");
+        var theRightSide = document.getElementById("rightSide");
+        var theBody = document.getElementsByTagName("body")[0];
+        //game over if clicking the wrong face
+        theBody.onclick = function gameOver() {
+            alert("Game Over!");
+            theBody.onclick = null;
+            theLeftSide.lastChild.onclick = null;
+        };
+        //delete all children on left and right side
+        function delete_all_children() {
+            while (theLeftSide.firstChild)
+                theLeftSide.removeChild(theLeftSide.firstChild);
+
+            while (theRightSide.firstChild)
+                theRightSide.removeChild(theRightSide.firstChild);
+        }
+
+        //generate all the faces for the game and add event handlers necessary
+        function generateFaces()
+        {
+          for(var i = 0; i < numberOfFaces; i++)
+          {
+            var image = document.createElement("img");
+            image.src="http://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png";
+            //generate random position b/w [0..400] for top and left since image is
+            // 100 px and width/height of box of div is 500
+            var leftPos = Math.floor(Math.random() * 400);
+            var leftHeight = Math.floor(Math.random() * 400);
+            image.style.left = leftPos+ "px";
+            image.style.top = leftHeight+ "px";
+            //add thew new image to the left side
+            theLeftSide.appendChild(image);
+          }
+          //add an onclick event if we guess the extra face removed from right side.
+          //clear all children and continue on.
+          theLeftSide.lastChild.onclick=
+            function nextLevel(event){
+                event.stopPropagation();
+                delete_all_children();
+                numberOfFaces += 5;
+                generateFaces();
+              };
+          //clone the left side images
+          var leftSideImages = theLeftSide.cloneNode(true);
+          //remove the last one from the cloned list
+          leftSideImages.removeChild(leftSideImages.lastChild);
+          //add the cloned list (-1 face) and add it to the right side
+          theRightSide.appendChild(leftSideImages);
+        }
+      </script>
+    </body>
+</html>
